@@ -4,6 +4,7 @@ import Home from './Home';
 import About from './About';
 import Contact from './Contact';
 import Dashboard from './dashboard/Dashboard';
+import Login from './Auth/Login';
 
 class App extends Component {
   render() {
@@ -21,7 +22,7 @@ class App extends Component {
           </nav>
           <hr />
           <Switch>
-              <Route exact path='/' component={Home} />
+              <Route exact path='/' component={Login} />
               <Route path='/contact' component={Contact} />
               <Route path='/about' component={About} />
               <Route path='/dashboard' component={Dashboard} />

@@ -19,10 +19,10 @@ export default class Login extends React.Component {
   onSubmitHandler = (event) => {
     event.preventDefault();
 
-    const user = { api_v1_student:
+    const user = { api_v1_student: {
         email: this.state.email,
         password: this.state.password
-
+      }
     }
 
     // try {
