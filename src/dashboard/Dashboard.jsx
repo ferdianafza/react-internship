@@ -7,6 +7,10 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Account from './Account';
+import Presences from '../presences/Presences';
+import Reports from '../reports/Reports';
+// import Editor from '../Editor/Editor';
+import { Link } from "react-router-dom";
 
 
 function TabPanel(props) {
@@ -79,10 +83,10 @@ export default function ScrollableTabsButtonAuto() {
         Item One
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <Reports />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item Three
+        <Presences />
       </TabPanel>
       <TabPanel value={value} index={3}>
         Item Four
