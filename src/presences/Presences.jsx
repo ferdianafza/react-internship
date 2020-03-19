@@ -13,6 +13,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import AwesomeComponent from '../dashboard/AwesomeComponent';
 
 // require("bootstrap/less/bootstrap.less");
 
@@ -40,44 +41,50 @@ export default class Products extends React.Component {
     this.state = {
       activePage: 1,
       totalPage: 0,
-      products: []
+      loading: false,
+      presences: []
     };
   }
 
   componentDidMount() {
-    this.getProducts();
+    this.getPresences();
   }
 
-  getProducts = () => {
-    axios.get(`https://mystore41.herokuapp.com/api/stores/35/products?page=${this.state.activePage}`)
+  getPresences = () => {
+    this.setState({ loading : true });
+    let token = localStorage.getItem('token');
+    axios.get(`https://internship2.herokuapp.com/api/v1/presences?page=${this.state.activePage}`, { headers: {"Authorization" : `${token}`} })
       .then(response => {
-        console.log(response.data.data);
-        this.setState({products: response.data.data});
-        this.setState({totalPage: response.data.meta.pagination.totalPage });
+        console.log(response);
+        this.setState({presences: response.data.presences});
+        this.setState({totalPage: response.data.meta.totalPage });
       });
+
+    setTimeout(() => {
+        this.setState({loading : false});
+      }, 2000)
   }
 
   handlePageChange = (pageNumber) => {
     console.log(`active page is ${pageNumber}`);
     this.setState({activePage: pageNumber});
-    this.getProducts();
+    this.getPresences();
   }
 
   handleDelete = (productId) => {
     axios.delete(`https://mystore41.herokuapp.com/api/products/${productId}`).
       then((response) => {
         alert('Product Deleted!')
-        this.getProducts();
+        this.getPresences();
       });
   }
 
   render() {
+    const { loading } = this.state;
     return (
       <div>
-        <div>
-          <h2> My Presences </h2>
-          <button>Checkin</button>
-        </div>
+        <center> { loading && <span><AwesomeComponent /></span> } </center>
+        { !loading &&
 
         <TableContainer component={Paper}>
           <Table className="" size="small" aria-label="a dense table">
@@ -88,15 +95,16 @@ export default class Products extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.state.products.map(product => (
-                <TableRow key={product.id}>
-                  <TableCell align="right">{product.type}</TableCell>
-                  <TableCell align="right">{product.attributes.description}</TableCell>
+              {this.state.presences.map(presence => (
+                <TableRow key={presence.id}>
+                  <TableCell align="right">{presence.checkin}</TableCell>
+                  <TableCell align="right">{presence.checkout}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+      }
         <br />
         <Pagination
           activePage={this.state.activePage}

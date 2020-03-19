@@ -8,6 +8,7 @@ import Dashboard from './dashboard/Dashboard';
 import Login from './Auth/Login';
 import MyProfile from './Acount/MyProfile';
 import CreateReport from './reports/CreateReport';
+import Report from './reports/Report';
 
 class App extends Component {
   render() {
@@ -21,6 +22,7 @@ class App extends Component {
               <Route path='/dashboard' component={Dashboard} />
               <Route path='/myprofile' component={MyProfile} />
               <Route path='/createreport' component={CreateReport} />
+              <Route path='/products/:id' component={Report} />
           </Switch>
         </div>
       </Router>

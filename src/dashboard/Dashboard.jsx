@@ -7,6 +7,9 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Account from './Account';
+import AwesomeComponent from './AwesomeComponent';
+import Loading from './Loading';
+import MyProfile from '../Acount/MyProfile';
 import Presences from '../presences/Presences';
 import Reports from '../reports/Reports';
 // import Editor from '../Editor/Editor';
@@ -80,7 +83,8 @@ export default function ScrollableTabsButtonAuto() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Item One
+        <AwesomeComponent />
+        <Loading />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Reports />
@@ -92,7 +96,7 @@ export default function ScrollableTabsButtonAuto() {
         Item Four
       </TabPanel>
       <TabPanel value={value} index={4}>
-        Item Five
+        <MyProfile />
       </TabPanel>
       <TabPanel value={value} index={5}>
         Item Six

@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import AwesomeComponent from '../dashboard/AwesomeComponent';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -20,7 +21,8 @@ export default class Login extends React.Component {
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      loading: false
     };
   }
 
@@ -30,6 +32,8 @@ export default class Login extends React.Component {
 
   onSubmitHandler = (event) => {
     event.preventDefault();
+
+    this.setState({ loading : true });
 
     const user = { api_v1_student: {
         email: this.state.email,
@@ -45,18 +49,25 @@ export default class Login extends React.Component {
     // }
 
     axios
-    .post('http://0.0.0.0:5000/api/v1/login', user)
+    .post('https://internship2.herokuapp.com/api/v1/login', user)
     .then(response => {
+      // console.log(response);
       localStorage.setItem('token', response.headers.authorization);
-      console.log(response);
-      // console.log(response.headers.authorization);
+      console.log(response.headers.authorization);
       this.props.history.push(`/dashboard`);
     })
+    // .catch((error) => {
+    //     console.log(error);
+    //   });
+
+    setTimeout(() => {
+      this.setState({loading : false});
+    }, 2000)
 
   }
 
   render(){
-    const { email, password } = this.state;
+    const { email, password, loading } = this.state;
 
     return (
       <div>
@@ -105,11 +116,13 @@ export default class Login extends React.Component {
                 fullWidth
                 variant="contained"
                 color="primary"
-
+                onClick={this.onSubmitHandler}
               >
-                Sign In
+              { loading && <i className="fa fa-refresh fa-spin"></i> }
+              { !loading && <span>Sign In</span> }
               </Button>
             </form>
+              { loading && <span><AwesomeComponent /></span> }
           </div>
           <Box mt={8}>
           </Box>
