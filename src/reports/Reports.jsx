@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import ReactDOM from "react-dom";
 import Pagination from "react-js-pagination";
+import ReactToExcel from 'react-html-table-to-excel';
 import { CSVLink, CSVDownload } from "react-csv";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -64,8 +65,8 @@ export default class Products extends React.Component {
         this.setState({totalPage: response.data.meta.totalPage });
       });
       setTimeout(() => {
-      this.setState({loading : false});
-    }, 2000)
+        this.setState({loading : false});
+      }, 2000)
   }
 
   getReportsCsv = () => {
@@ -101,10 +102,19 @@ export default class Products extends React.Component {
       <div>
         <Popper />
         <CSVLink data={csvData}>csv</CSVLink>
+        <ReactToExcel
+          variant="contained"
+          color="primary"
+          className="btn"
+          table="table-reports"
+          filename="excel file"
+          sheet="sheet 1"
+          buttonText="xls"
+         />
         <center> { loading && <span><AwesomeComponent /></span> } </center>
         { !loading &&
         <TableContainer component={Paper}>
-          <Table className="" size="small" aria-label="a dense table">
+          <Table className="" size="small" id="table-reports" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell><h3>Subject</h3></TableCell>

@@ -3,6 +3,7 @@ import axios from "axios";
 import ReactDOM from "react-dom";
 import Pagination from "react-js-pagination";
 import PropTypes from "prop-types";
+import ReactToExcel from 'react-html-table-to-excel';
 import { Link } from "react-router-dom";
 import $ from "jquery";
 import { makeStyles } from '@material-ui/core/styles';
@@ -84,10 +85,19 @@ export default class Products extends React.Component {
     return (
       <div>
         <center> { loading && <span><AwesomeComponent /></span> } </center>
+        <ReactToExcel
+          variant="contained"
+          color="primary"
+          className="btn"
+          table="table-presences"
+          filename="excel file"
+          sheet="sheet 1"
+          buttonText="xls"
+         />
         { !loading &&
 
         <TableContainer component={Paper}>
-          <Table className="" size="small" aria-label="a dense table">
+          <Table className="" size="small" id="table-presences" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell align="right">Checkin</TableCell>
