@@ -15,6 +15,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import AwesomeComponent from '../dashboard/AwesomeComponent';
+import Button from '@material-ui/core/Button';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'
 
 // require("bootstrap/less/bootstrap.less");
 
@@ -72,6 +75,12 @@ export default class Products extends React.Component {
     this.getPresences();
   }
 
+  jsPdfGenerator = () => {
+    const doc = new jsPDF()
+    doc.autoTable({ html: '#table-presences' })
+    doc.save('table.pdf')
+  }
+
   handleDelete = (productId) => {
     axios.delete(`https://mystore41.herokuapp.com/api/products/${productId}`).
       then((response) => {
@@ -85,6 +94,9 @@ export default class Products extends React.Component {
     return (
       <div>
         <center> { loading && <span><AwesomeComponent /></span> } </center>
+        <Button color="primary"onClick={this.jsPdfGenerator}>
+          pdf
+        </Button>
         <ReactToExcel
           variant="contained"
           color="primary"

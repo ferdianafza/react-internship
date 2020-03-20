@@ -14,9 +14,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Popper from './Popper';
 import AwesomeComponent from '../dashboard/AwesomeComponent';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'
+import Moment from 'react-moment';
 
 
 const useStyles = makeStyles({
@@ -40,6 +44,7 @@ const rows = [
 export default class Products extends React.Component {
   constructor(props) {
     super(props);
+    this.myRef = React.createRef();
     this.state = {
       activePage: 1,
       totalPage: 0,
@@ -56,7 +61,7 @@ export default class Products extends React.Component {
     this.setState({ loading : true });
     let token = localStorage.getItem('token');
     // axios.get(`https://internship2.herokuapp.com/api/v1/reports?page=${this.state.activePage}`)
-    axios.get(`https://internship2.herokuapp.com/api/v1/reports`, { headers: {
+    axios.get(`https://internship2.herokuapp.com/api/v1/reports?page=${this.state.activePage}`, { headers: {
                                                                                   'accept': 'application/json',
                                                                                   "Authorization" : `${token}`} })
       .then(response => {
@@ -84,6 +89,12 @@ export default class Products extends React.Component {
     this.getReports();
   }
 
+  jsPdfGenerator = () => {
+    const doc = new jsPDF()
+    doc.autoTable({ html: '#table-reports' })
+    doc.save('Reports.pdf')
+  }
+
   handleDelete = (productId) => {
     axios.delete(`https://mystore41.herokuapp.com/api/products/${productId}`).
       then((response) => {
@@ -92,16 +103,41 @@ export default class Products extends React.Component {
       });
   }
 
+  exportCsv = () => {
+    var csvRow= [];
+    var A = [['no', 'subject', 'content', 'created at']];
+    var re = this.state.reports;
+    console.log(re);
+
+    for(var item=0; item<re.length;item++) {
+      A.push([item,re[item].subject,re[item].content,re[item].created_at]);
+    }
+
+    for(var i=0; i<A.length;++i) {
+      csvRow.push(A[i].join(","))
+    }
+    console.log(csvRow);
+
+    var csvString = csvRow.join("%0A");
+
+    var a = document.createElement("a");
+    a.href='data:attachment/csv,'+csvString;
+    a.target ="_Blank";
+    a.download="reports.csv";
+    document.body.appendChild(a);
+
+    a.click();
+  }
+
 
   render() {
-      const { loading, reports } = this.state;
-  const csvData = [
-    ["Subject", "Content" ]
-  ];
+    const { loading } = this.state;
     return (
       <div>
         <Popper />
-        <CSVLink data={csvData}>csv</CSVLink>
+        <Button color="primary" onClick={this.exportCsv}>
+          csv
+        </Button>
         <ReactToExcel
           variant="contained"
           color="primary"
@@ -111,10 +147,13 @@ export default class Products extends React.Component {
           sheet="sheet 1"
           buttonText="xls"
          />
+         <Button color="primary"onClick={this.jsPdfGenerator}>
+          pdf
+         </Button>
         <center> { loading && <span><AwesomeComponent /></span> } </center>
         { !loading &&
         <TableContainer component={Paper}>
-          <Table className="" size="small" id="table-reports" aria-label="a dense table">
+          <Table className="" size="small" ref={this.myRef} id="table-reports" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell><h3>Subject</h3></TableCell>
@@ -130,7 +169,7 @@ export default class Products extends React.Component {
                     {report.subject}
                   </TableCell>
                   <TableCell align="right">{report.contents}</TableCell>
-                  <TableCell align="right">{report.created_at}</TableCell>
+                  <TableCell align="right"><Moment>{report.created_at}</Moment></TableCell>
                   <TableCell align="right">
                     <Link to={`/report/${report.id}`}>
                       Show
