@@ -12,6 +12,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import AwesomeComponent from '../dashboard/AwesomeComponent';
 
 export default class Product extends React.Component {
   constructor(props) {
@@ -19,11 +20,13 @@ export default class Product extends React.Component {
     this.state = {
       subject: "",
       content: "",
-      created_at: ""
+      created_at: "",
+      loading: false
     };
   }
 
   componentDidMount() {
+    this.setState({ loading : true });
     let token = localStorage.getItem('token');
     const { match: {params: { id } } } = this.props;
 
@@ -38,16 +41,22 @@ export default class Product extends React.Component {
         this.setState({created_at : res.data.created_at});
 
       })
+
+    setTimeout(() => {
+        this.setState({loading : false});
+      }, 2000)
   }
 
 
 
 render() {
-    const { subject, content, created_at } = this.state;
+    const { subject, content, created_at, loading } = this.state;
     return (
       <div >
       <AppBar />
       <br />
+      <center> { loading && <span><AwesomeComponent /></span> } </center>
+      { !loading && <span>
       <Card className="">
         <CardActionArea>
           <CardContent>
@@ -60,6 +69,7 @@ render() {
           </CardContent>
         </CardActionArea>
       </Card>
+      </span> }
       </div>
     );
   }
