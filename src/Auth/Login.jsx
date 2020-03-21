@@ -51,10 +51,10 @@ export default class Login extends React.Component {
     axios
     .post('https://internship2.herokuapp.com/api/v1/login', user)
     .then(response => {
-      // console.log(response);
+      console.log(response);
       localStorage.setItem('token', response.headers.authorization);
       console.log(response.headers.authorization);
-      this.props.history.push(`/dashboard`);
+      this.props.history.push(`/reports`);
     })
     // .catch((error) => {
     //     console.log(error);

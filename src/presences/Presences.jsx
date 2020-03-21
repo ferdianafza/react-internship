@@ -3,6 +3,7 @@ import axios from "axios";
 import ReactDOM from "react-dom";
 import Pagination from "react-js-pagination";
 import PropTypes from "prop-types";
+import { CSVLink, CSVDownload } from "react-csv";
 import ReactToExcel from 'react-html-table-to-excel';
 import { Link } from "react-router-dom";
 import $ from "jquery";
@@ -18,6 +19,8 @@ import AwesomeComponent from '../dashboard/AwesomeComponent';
 import Button from '@material-ui/core/Button';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'
+import Moment from 'react-moment';
+import AppBar from '../dashboard/AppBar';
 
 // require("bootstrap/less/bootstrap.less");
 
@@ -57,7 +60,9 @@ export default class Products extends React.Component {
   getPresences = () => {
     this.setState({ loading : true });
     let token = localStorage.getItem('token');
-    axios.get(`https://internship2.herokuapp.com/api/v1/presences?page=${this.state.activePage}`, { headers: {"Authorization" : `${token}`} })
+    axios.get(`https://internship2.herokuapp.com/api/v1/presences?page=${this.state.activePage}`, { headers: {
+                                                                                              'accept': 'application/json',
+                                                                                              "Authorization" : `${token}`} })
       .then(response => {
         console.log(response);
         this.setState({presences: response.data.presences});
@@ -81,19 +86,40 @@ export default class Products extends React.Component {
     doc.save('table.pdf')
   }
 
-  handleDelete = (productId) => {
-    axios.delete(`https://mystore41.herokuapp.com/api/products/${productId}`).
-      then((response) => {
-        alert('Product Deleted!')
-        this.getPresences();
-      });
-  }
+  exportCsv = () => {
+    var csvRow= [];
+    var A = [['no', 'checkin', 'checkout']];
+    var re = this.state.presences;
+    console.log(re);
 
+    for(var item=0; item<re.length;item++) {
+      A.push([item,re[item].checkin,re[item].checkout]);
+    }
+
+    for(var i=0; i<A.length;++i) {
+      csvRow.push(A[i].join(","))
+    }
+    console.log(csvRow);
+
+    var csvString = csvRow.join("%0A");
+
+    var a = document.createElement("a");
+    a.href='data:attachment/csv,'+csvString;
+    a.target ="_Blank";
+    a.download="reports.csv";
+    document.body.appendChild(a);
+
+    a.click();
+  }
   render() {
     const { loading } = this.state;
     return (
       <div>
+        <AppBar />
         <center> { loading && <span><AwesomeComponent /></span> } </center>
+        <Button color="primary" onClick={this.exportCsv}>
+          csv
+        </Button>
         <Button color="primary"onClick={this.jsPdfGenerator}>
           pdf
         </Button>
@@ -119,8 +145,8 @@ export default class Products extends React.Component {
             <TableBody>
               {this.state.presences.map(presence => (
                 <TableRow key={presence.id}>
-                  <TableCell align="right">{presence.checkin}</TableCell>
-                  <TableCell align="right">{presence.checkout}</TableCell>
+                  <TableCell align="right"><Moment>{presence.checkin}</Moment></TableCell>
+                  <TableCell align="right"><Moment>{presence.checkout}</Moment></TableCell>
                 </TableRow>
               ))}
             </TableBody>

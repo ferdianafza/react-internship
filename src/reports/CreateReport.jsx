@@ -54,7 +54,11 @@ class CrerateReport extends Component {
         return (
             <div className="container">
                 <form onSubmit={this.handleSubmit}>
+                    <br />
+                    <label>Subject</label>
+                    <br />
                     <input type="text" name="subject" onChange={this.handleChange} />
+                    <br />
                     <br />
                     <CKEditor
                         editor={ ClassicEditor }

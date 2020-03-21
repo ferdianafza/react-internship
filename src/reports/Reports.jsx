@@ -21,6 +21,9 @@ import AwesomeComponent from '../dashboard/AwesomeComponent';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'
 import Moment from 'react-moment';
+import stripHtml from "string-strip-html";
+import TruncateString from 'react-truncate-string'
+import AppBar from '../dashboard/AppBar';
 
 
 const useStyles = makeStyles({
@@ -61,9 +64,10 @@ export default class Products extends React.Component {
     this.setState({ loading : true });
     let token = localStorage.getItem('token');
     // axios.get(`https://internship2.herokuapp.com/api/v1/reports?page=${this.state.activePage}`)
-    axios.get(`https://internship2.herokuapp.com/api/v1/reports?page=${this.state.activePage}`, { headers: {
-                                                                                  'accept': 'application/json',
-                                                                                  "Authorization" : `${token}`} })
+    axios.get(`https://internship2.herokuapp.com/api/v1/reports?page=${this.state.activePage}`,
+                                                                    { headers: {
+                                                                        'accept': 'application/json',
+                                                                        "Authorization" : `${token}`} })
       .then(response => {
         console.log(response);
         this.setState({reports: response.data.reports});
@@ -103,6 +107,10 @@ export default class Products extends React.Component {
       });
   }
 
+  truncate = (str) => {
+    return str.length > 10 ? str.substring(0, 17) + "..." : str;
+}
+
   exportCsv = () => {
     var csvRow= [];
     var A = [['no', 'subject', 'content', 'created at']];
@@ -110,7 +118,7 @@ export default class Products extends React.Component {
     console.log(re);
 
     for(var item=0; item<re.length;item++) {
-      A.push([item,re[item].subject,re[item].content,re[item].created_at]);
+      A.push([item,re[item].subject,stripHtml(re[item].content.body),re[item].created_at]);
     }
 
     for(var i=0; i<A.length;++i) {
@@ -134,6 +142,7 @@ export default class Products extends React.Component {
     const { loading } = this.state;
     return (
       <div>
+        <AppBar />
         <Popper />
         <Button color="primary" onClick={this.exportCsv}>
           csv
@@ -168,10 +177,10 @@ export default class Products extends React.Component {
                   <TableCell component="th" scope="row">
                     {report.subject}
                   </TableCell>
-                  <TableCell align="right">{report.contents}</TableCell>
+                  <TableCell align="right">{this.truncate(stripHtml(report.content.body))}</TableCell>
                   <TableCell align="right"><Moment>{report.created_at}</Moment></TableCell>
                   <TableCell align="right">
-                    <Link to={`/report/${report.id}`}>
+                    <Link to={`/reports/${report.id}`}>
                       Show
                     </Link>
                   </TableCell>

@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
 import axios from "axios";
+import AppBar from '../dashboard/AppBar';
+import Button from '@material-ui/core/Button';
+import AwesomeComponent from '../dashboard/AwesomeComponent';
+import Logout from '../Auth/Logout';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Typography from '@material-ui/core/Typography';
 
 export default class MyProfile extends React.Component {
   constructor(props) {
@@ -26,11 +36,13 @@ export default class MyProfile extends React.Component {
       status: "",
       zipcode: "",
       latitude: "",
-      longitude: ""
+      longitude: "",
+      loading: false
     };
   }
 
   componentDidMount() {
+    this.setState({ loading : true });
     let token = localStorage.getItem('token');
 
     axios
@@ -40,7 +52,6 @@ export default class MyProfile extends React.Component {
 
       this.setState({id : response.data.id});
       this.setState({email : response.data.email});
-      this.setState({nis : response.data.nis});
       this.setState({firstname : response.data.firstname});
       this.setState({lastname : response.data.lastname});
       this.setState({school : response.data.school});
@@ -61,9 +72,14 @@ export default class MyProfile extends React.Component {
       this.setState({major_id : response.data.major_id});
 
     })
+    setTimeout(() => {
+      this.setState({loading : false});
+    }, 2000)
+
   }
 
   handleLogout = () => {
+    this.setState({ loading : true });
     let token = localStorage.getItem('token');
 
     axios
@@ -73,17 +89,72 @@ export default class MyProfile extends React.Component {
       // this.props.history.push(`/dashboard`);
       window.location.href = '/';
     })
+
+    setTimeout(() => {
+      this.setState({loading : false});
+    }, 2000)
   }
 
   render(){
-    const { id, email } = this.state;
+    const { id, email, firstname, address, mother_name, phone,
+             emergency_number, lastname, father_name, zipcode,
+             city, school, nis, start_date, end_date, loading } = this.state;
 
     return (
       <div>
-        <p>ID : {id}</p>
-        <p>Email : {email}</p>
-
-        <button onClick={this.handleLogout}>Logout</button>
+        <AppBar />
+        { loading && <span><AwesomeComponent /></span> }
+         { !loading && <span>
+        <Card className="">
+          <CardActionArea>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                {firstname} {lastname} <span style={{marginLeft: 360}}></span>
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Email {email}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Father {father_name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Mother {mother_name}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Phone {phone}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Emergency Number {emergency_number}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Start {start_date} until {end_date}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+        <br />
+        <Card className="">
+          <CardActionArea>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                My Address <span style={{marginLeft: 360}}></span>
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+               {address}, {zipcode}, {city}
+              </Typography>
+              <Typography gutterBottom variant="h5" component="h2">
+                School <span style={{marginLeft: 360}}></span>
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                {school}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Nis {nis}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+        </span> }
       </div>
     )
   }

@@ -8,23 +8,25 @@ import Dashboard from './dashboard/Dashboard';
 import Login from './Auth/Login';
 import MyProfile from './Acount/MyProfile';
 import CreateReport from './reports/CreateReport';
+import Presences from './presences/Presences';
+import Reports from './reports/Reports';
 import Report from './reports/Report';
 
 class App extends Component {
   render() {
     return (
     <Router>
-        <div>
           <Switch>
               <Route exact path='/' component={Login} />
+              <Route path='/reports/:id' component={Report} />
+              <Route path='/reports' component={Reports} />
+              <Route path='/presences' component={Presences} />
               <Route path='/contact' component={Contact} />
               <Route path='/about' component={About} />
               <Route path='/dashboard' component={Dashboard} />
               <Route path='/myprofile' component={MyProfile} />
               <Route path='/createreport' component={CreateReport} />
-              <Route path='/products/:id' component={Report} />
           </Switch>
-        </div>
       </Router>
     );
   }
