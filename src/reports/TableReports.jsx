@@ -14,16 +14,13 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Popper from './Popper';
 import AwesomeComponent from '../dashboard/AwesomeComponent';
+import Paper from '@material-ui/core/Paper';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'
 import Moment from 'react-moment';
 import stripHtml from "string-strip-html";
 import TruncateString from 'react-truncate-string'
-import AppBar from '../dashboard/AppBar';
 
 
 const useStyles = makeStyles({
@@ -31,18 +28,6 @@ const useStyles = makeStyles({
     minWidth: 650,
   },
 });
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 
 export default class Products extends React.Component {
   constructor(props) {
@@ -94,32 +79,6 @@ export default class Products extends React.Component {
 
   truncate = (str) => {
     return str.length > 10 ? str.substring(0, 17) + "..." : str;
-}
-
-  exportCsv = () => {
-    var csvRow= [];
-    var A = [['no', 'subject', 'content', 'created at']];
-    var re = this.state.reports;
-    console.log(re);
-
-    for(var item=0; item<re.length;item++) {
-      A.push([item,re[item].subject,stripHtml(re[item].content.body),re[item].created_at]);
-    }
-
-    for(var i=0; i<A.length;++i) {
-      csvRow.push(A[i].join(","))
-    }
-    console.log(csvRow);
-
-    var csvString = csvRow.join("%0A");
-
-    var a = document.createElement("a");
-    a.href='data:attachment/csv,'+csvString;
-    a.target ="_Blank";
-    a.download="reports.csv";
-    document.body.appendChild(a);
-
-    a.click();
   }
 
 
@@ -127,23 +86,6 @@ export default class Products extends React.Component {
     const { loading } = this.state;
     return (
       <div>
-        <AppBar />
-        <Popper />
-        <Button color="primary" onClick={this.exportCsv}>
-          csv
-        </Button>
-        <ReactToExcel
-          variant="contained"
-          color="primary"
-          className="btn"
-          table="table-reports"
-          filename="excel file"
-          sheet="sheet 1"
-          buttonText="xls"
-         />
-         <Button color="primary"onClick={this.jsPdfGenerator}>
-          pdf
-         </Button>
         <center> { loading && <span><AwesomeComponent /></span> } </center>
         { !loading &&
         <TableContainer component={Paper}>
@@ -153,7 +95,6 @@ export default class Products extends React.Component {
                 <TableCell><h3>Subject</h3></TableCell>
                 <TableCell align="right"><h3>Content</h3></TableCell>
                 <TableCell align="right"><h3>Created at</h3></TableCell>
-                <TableCell align="right"><h3>Action</h3></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -164,11 +105,6 @@ export default class Products extends React.Component {
                   </TableCell>
                   <TableCell align="right">{this.truncate(stripHtml(report.content.body))}</TableCell>
                   <TableCell align="right"><Moment>{report.created_at}</Moment></TableCell>
-                  <TableCell align="right">
-                    <Link to={`/reports/${report.id}`}>
-                      Show
-                    </Link>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

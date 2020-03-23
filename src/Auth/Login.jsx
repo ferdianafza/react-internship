@@ -14,6 +14,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AwesomeComponent from '../dashboard/AwesomeComponent';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -71,6 +74,7 @@ export default class Login extends React.Component {
 
     return (
       <div>
+      <Card className="" variant="outlined">
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <div>
@@ -127,6 +131,11 @@ export default class Login extends React.Component {
           <Box mt={8}>
           </Box>
         </Container>
+
+
+
+
+    </Card>
       </div>
     )
   }

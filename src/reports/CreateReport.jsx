@@ -78,7 +78,7 @@ class CrerateReport extends Component {
                     />
                     <Button type="submit"variant="contained" color="primary">
                         { loading && <span size="4"><Loading /></span> }
-                        Create
+                        { !loading && <span size="4">Create</span> }
                     </Button>
 
                 </form>
